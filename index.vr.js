@@ -5,20 +5,47 @@ import {
   Pano,
   View,
   Text,
-  Model
+  Animated,
 } from 'react-vr';
 
 export default class Basics extends Component {
+  constructor() {
+    super();
+
+    this.moveForward = this.moveForward.bind(this);
+    this.moveBack = this.moveBack.bind(this);
+
+    this.state = {
+      zValue: new Animated.Value(-2)
+    }
+  }
+
+  moveForward() {
+    Animated.spring(this.state.zValue, {
+      toValue: -1
+    }).start();
+  }
+
+  moveBack() {
+    Animated.spring(this.state.zValue, {
+      toValue: -2
+    }).start();
+  }
+
   render() {
     return (
       <View>
         <Pano source={asset('starry-sky.jpg')}></Pano>
-        <Model
-          source={{obj: asset('Tree.obj')}}
-          texture={'http://i.imgur.com/14HMTcQb.jpg'}
+        <Animated.Image
+          onEnter={this.moveForward}
+          onExit={this.moveBack}
+          source={asset('moon.jpg')}
           style={{
+            width: 1,
+            height: 1,
+            layoutOrigin: [0.5, 0.5],
             transform: [
-              { translate: [0, -1, -3] }
+              { translateZ: this.state.zValue }
             ]
           }}
         />
